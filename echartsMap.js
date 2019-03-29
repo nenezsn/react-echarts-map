@@ -6,9 +6,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const echarts_url = 'http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js';
-const china_url = 'http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js';
-const bmap_url = 'http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js'
+const echarts_url = 'https://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js';
+const china_url = 'https://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js';
 
 class EchartsMap extends React.Component {
 
@@ -35,15 +34,16 @@ class EchartsMap extends React.Component {
         if (!result) {
             // 保证先加载echarts脚本
             this.createScriptEl(echarts_url).then(() => {
-                Promise.all([this.createScriptEl(bmap_url), this.createScriptEl(china_url)]).then(data => {
+                this.createScriptEl(china_url).then(() => {
                     this.init()
                 }).catch(err => {
-                    alert('地图加载失败'+err)
+                    alert('地图加载失败' + err)
                 })
             }).catch(err => {
-                alert('地图加载失败'+err)
+                alert('地图加载失败' + err)
             })
         }
+
     }
 
     // 初始化
@@ -67,8 +67,8 @@ class EchartsMap extends React.Component {
         var option = {
             backgroundColor: '#404a59',
             title: {
-                text: 'pbu',
-                subtext: '中国地图',
+                text: '大标题',
+                subtext: '小标题',
                 sublink: 'https://cloud.seentao.com',
                 left: 'center',
                 textStyle: {
@@ -104,9 +104,17 @@ class EchartsMap extends React.Component {
                     emphasis: {
                         areaColor: '#2a333d'
                     }
-                }
+                },
+                selectedMode:'single',
+                // regions: [{ name: "南海诸岛", value: 0, itemStyle: { normal: { opacity: 0, label: { show: !1 } } } }]
             },
             series: [
+                {
+                    name: "学校数量",
+                    type: "map",
+                    geoIndex: 0,
+                    data: data
+                },
                 {
                     name: 'pm2.5',
                     type: 'scatter',
@@ -215,11 +223,11 @@ EchartsMap.propTypes = {
 };
 
 EchartsMap.defaultProps = {
-    width: 500,
-    height: 500,
-    data: [{ name: '北京', value: 39 },{name: '武汉', value: 273}],
-    geoCoordMap: { '北京': [116.46, 39.92],'武汉':[114.31,30.52]},
-    clickScatter: () => { },
-    clickArea: () => { },
+    width: 600,
+    height: 400,
+    data: [{ name: '北京', value: 30 }, { name: '武汉', value: 273 }],
+    geoCoordMap: { '北京': [116.46, 39.92], '武汉': [114.31, 30.52] },
+    clickScatter: (data) => {alert(data) },
+    clickArea: (data) => { alert(data) },
 }
 export default EchartsMap
